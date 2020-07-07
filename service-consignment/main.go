@@ -14,8 +14,9 @@ import (
 )
 
 const (
-	srvName           = "go.micro.srv.consignment"
-	vesselServiceName = "go.micro.srv.vessel"
+	srvName           = "shippy.service.consignment"
+	srvVersion        = "latest"
+	vesselServiceName = "shippy.service.vessel"
 	dbHost            = "localhost:27017"
 )
 
@@ -38,10 +39,18 @@ func main() {
 	)
 
 	vesselClient := vesselProto.NewVesselService(vesselServiceName, srv.Client())
-	h := &handler.Service{session, vesselClient}
 
-	// Init方法会解析命令行flags
-	srv.Init()
+	// New Service
+	service := micro.NewService(
+		micro.Name(srvName),
+		micro.Version(srvVersion),
+	)
+
+	// Initialise service
+	service.Init()
+
+	// Register Handler
+	h := &handler.Service{session, vesselClient}
 
 	pb.RegisterShippingServiceHandler(srv.Server(), h)
 

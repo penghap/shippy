@@ -1,14 +1,14 @@
 package handler
 
 import (
-	"log"
-
-	pb "github.com/penghap/shippy/service-consignment/proto/consignment"
-	vesselProto "github.com/penghap/shippy/service-vessel/proto/vessel"
 	"golang.org/x/net/context"
 	"gopkg.in/mgo.v2"
 
+	log "github.com/micro/go-micro/v2/logger"
+
+	pb "github.com/penghap/shippy/service-consignment/proto/consignment"
 	"github.com/penghap/shippy/service-consignment/repository"
+	vesselProto "github.com/penghap/shippy/service-vessel/proto/vessel"
 )
 
 type Service struct {
@@ -33,7 +33,7 @@ func (s *Service) CreateConsignment(ctx context.Context, in *pb.Consignment, out
 		return err
 	}
 
-	log.Printf("Found vessel: %s \n", vesselResponse.Vessel)
+	log.Info("Found vessel: %s \n", vesselResponse.Vessel)
 
 	//vessel service
 	in.VesselId = vesselResponse.Vessel.Id
