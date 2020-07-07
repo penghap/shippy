@@ -1,21 +1,19 @@
 package main
 
 import (
-	"log"
-
-	"github.com/penghap/shippy/service-user/handler"
-
 	"github.com/micro/go-micro/v2"
-
-	"github.com/penghap/shippy/service-user/repository"
-
-	pb "github.com/penghap/shippy/service-user/proto/user"
+	log "github.com/micro/go-micro/v2/logger"
 
 	"github.com/penghap/shippy/service-user/database"
+	"github.com/penghap/shippy/service-user/handler"
+	pb "github.com/penghap/shippy/service-user/proto/user"
+	"github.com/penghap/shippy/service-user/repository"
 )
 
 const (
-	srvName = "go.micro.srv.user"
+	srvName = "shippy.service.user"
+	//srvTopic   = "shippy.service.user"
+	srvVersion = "latest"
 )
 
 func main() {
@@ -30,20 +28,25 @@ func main() {
 
 	repo := repository.UserRepository{db}
 
-	srv := micro.NewService(
+	// New Service
+	service := micro.NewService(
 		micro.Name(srvName),
+		micro.Version(srvVersion),
 	)
 
-	srv.Init()
+	// Initialise service
+	service.Init()
 
+	// Register Handler
 	h := &handler.Service{}
 	h.SetRepo(&repo)
+	pb.RegisterUserServiceHandler(service.Server(), h)
 
-	pb.RegisterUserServiceHandler(srv.Server(), h)
+	// Register Struct as Subscriber
+	//micro.RegisterSubscriber("", service.Server(), new(subscriber.ServiceUser))
 
-	// Run the server
-	if err := srv.Run(); err != nil {
+	// Run service
+	if err := service.Run(); err != nil {
 		log.Fatal(err)
 	}
-
 }

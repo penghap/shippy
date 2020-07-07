@@ -6,10 +6,11 @@ import (
 	"github.com/dgrijalva/jwt-go"
 
 	pb "github.com/penghap/shippy/service-user/proto/user"
-	"github.com/penghap/shippy/service-user/repository"
+	repo "github.com/penghap/shippy/service-user/repository"
 )
 
 var (
+	Issuer   = "go.micro.srv.user"
 	key      = []byte("token")
 	duration = time.Hour * 72
 )
@@ -25,7 +26,7 @@ type AuthAble interface {
 }
 
 type TokenService struct {
-	repo repository.Repository
+	repo repo.Repository
 }
 
 // sting -> CustomClaims
@@ -49,7 +50,7 @@ func (srv *TokenService) Encode(user *pb.User) (string, error) {
 		user,
 		jwt.StandardClaims{
 			ExpiresAt: expireToken,
-			Issuer:    "go.micro.srv.user",
+			Issuer:    Issuer,
 		},
 	}
 

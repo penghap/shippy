@@ -2,10 +2,10 @@ package handler
 
 import (
 	"errors"
-	"log"
+
+	log "github.com/micro/go-micro/v2/logger"
 
 	"golang.org/x/crypto/bcrypt"
-
 	"golang.org/x/net/context"
 
 	pb "github.com/penghap/shippy/service-user/proto/user"
@@ -40,7 +40,7 @@ func (srv *Service) GetAll(ctx context.Context, in *pb.User, out *pb.Response) e
 }
 
 func (srv *Service) Create(ctx context.Context, in *pb.User, out *pb.Response) error {
-	log.Println("Create in:", in)
+	log.Info("Create in:", in)
 	hashedPwd, err := bcrypt.GenerateFromPassword([]byte(in.Password), bcrypt.DefaultCost)
 
 	if err != nil {
@@ -62,7 +62,7 @@ func (srv *Service) Create(ctx context.Context, in *pb.User, out *pb.Response) e
 }
 
 func (srv *Service) Auth(ctx context.Context, in *pb.User, out *pb.Token) error {
-	log.Println("Logging in with:", in.Email, in.Password)
+	log.Info("Logging in with:", in.Email, in.Password)
 	user, err := srv.repo.GetByEmail(in.Email)
 	if err != nil {
 		return err
@@ -76,7 +76,7 @@ func (srv *Service) Auth(ctx context.Context, in *pb.User, out *pb.Token) error 
 	if err != nil {
 		return err
 	}
-	log.Println(user)
+	log.Info(user)
 	out.Token = "testing"
 	return nil
 }

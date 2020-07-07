@@ -1,10 +1,22 @@
-protoc:
-	protoc -I. --proto_path=. --micro_out=. --go_out=. proto/user/user.proto
 
-build:
-	protoc -I. --proto_path=. --micro_out=. --go_out=. proto/user/user.proto
-	GOOS=linux GOARCH=amd64 go build
-	docker build -t service-user .
+GOPATH:=$(shell go env GOPATH)
+MODIFY=Mproto/imports/api.proto=github.com/micro/go-micro/v2/api/proto
 
-run:
-	docker run -p 50053:50051 service-user
+.PHONY: proto
+proto:
+    
+	protoc --proto_path=. --micro_out=${MODIFY}:. --go_out=${MODIFY}:. proto/service-user/service-user.proto
+    
+
+.PHONY: build
+build: proto
+
+	go build -o service-user-service *.go
+
+.PHONY: test
+test:
+	go test -v ./... -cover
+
+.PHONY: docker
+docker:
+	docker build . -t service-user-service:latest
