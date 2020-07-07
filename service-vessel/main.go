@@ -1,13 +1,11 @@
-// service-vessel/main.go
 package main
 
 import (
-	"errors"
-	"log"
 	"os"
 
 	"github.com/micro/go-micro/v2"
-	"golang.org/x/net/context"
+	log "github.com/micro/go-micro/v2/logger"
+	"gopkg.in/mgo.v2"
 
 	"github.com/penghap/shippy/service-vessel/database"
 	"github.com/penghap/shippy/service-vessel/handler"
@@ -16,43 +14,12 @@ import (
 
 const (
 	dbHost  = "localhost:27017"
-	srvName = "go.micro.srv.vessel"
+	srvName = "shippy.service.vessel"
+	//srvTopic   = "shippy.service.vessel"
+	srvVersion = "latest"
 )
 
-type Repository interface {
-	FindAvailable(*pb.Specification) (*pb.Vessel, error)
-}
-
-type VesselRepository struct {
-	vessels []*pb.Vessel
-}
-
-func (repo *VesselRepository) FindAvailable(in *pb.Specification) (*pb.Vessel, error) {
-
-	for _, vessel := range repo.vessels {
-		if in.Capacity <= vessel.Capacity && in.MaxWeight <= vessel.MaxWeight {
-			return vessel, nil
-		}
-	}
-	return nil, errors.New("No vessel found by that input")
-}
-
-type Service struct {
-	repo Repository
-}
-
-func (s *Service) FindAvailable(ctx context.Context, in *pb.Specification, out *pb.Response) error {
-	vessel, err := s.repo.FindAvailable(in)
-	if err != nil {
-		return err
-	}
-
-	out.Vessel = vessel
-	return nil
-}
-
-func main() {
-
+func connectDB() *mgo.Session {
 	// Database host from env
 	host := os.Getenv("DB_HOST")
 	if host == "" {
@@ -65,17 +32,31 @@ func main() {
 		log.Fatalf("Could not connect to mongo host %s - %v", host, err)
 	}
 
-	srv := micro.NewService(
+	return session
+}
+
+func main() {
+	// connect DB
+	session := connectDB()
+
+	// New Service
+	service := micro.NewService(
 		micro.Name(srvName),
+		micro.Version(srvVersion),
 	)
 
-	srv.Init()
+	// Initialise service
+	service.Init()
 
+	// Register Handler
 	h := &handler.Service{session}
+	pb.RegisterVesselServiceHandler(service.Server(), h)
 
-	pb.RegisterVesselServiceHandler(srv.Server(), h)
+	// Register Struct as Subscriber
+	//micro.RegisterSubscriber("shippy.service.service-vessel", service.Server(), new(subscriber.ServiceVessel))
 
-	if err := srv.Run(); err != nil {
-		log.Fatalf("Vessel service run failed: %v", err)
+	// Run service
+	if err := service.Run(); err != nil {
+		log.Fatal(err)
 	}
 }

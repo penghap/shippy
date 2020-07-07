@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package vessel;
 
-//option go_package = "proto/vessel/vessel.proto;vessel";
-
 service VesselService {
   rpc FindAvailable(Specification) returns (Response) {}
   rpc Create(Vessel) returns (Response) {}

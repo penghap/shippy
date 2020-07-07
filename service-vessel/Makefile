@@ -1,11 +1,22 @@
-protoc:
-	protoc -I. --proto_path=. --micro_out=. --go_out=. proto/vessel/vessel.proto
 
-build:
-	protoc -I. --proto_path=. --micro_out=. --go_out=. proto/vessel/vessel.proto
+GOPATH:=$(shell go env GOPATH)
+MODIFY=Mproto/imports/api.proto=github.com/micro/go-micro/v2/api/proto
 
-	GOOS=linux GOARCH=amd64 go build
-	docker build -t service-vessel .
+.PHONY: proto
+proto:
+    
+	protoc --proto_path=. --micro_out=${MODIFY}:. --go_out=${MODIFY}:. proto/vessel/vessel.proto
+    
 
-run:
-	docker run -p 50052:50051 -e MICRO_SERVER_ADDRESS=:50051 -e MICRO_REGISTRY=mdns service-vessel
+.PHONY: build
+build: proto
+
+	go build -o service-vessel-service *.go
+
+.PHONY: test
+test:
+	go test -v ./... -cover
+
+.PHONY: docker
+docker:
+	docker build . -t service-vessel-service:latest
