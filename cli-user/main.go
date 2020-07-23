@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	userServiceName = "go.micro.srv.user"
+	userServiceName = "shippy.service.user"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-module service-user
+module github.com/penghap/shippy/service-user
 
 go 1.13
 
@@ -11,7 +11,6 @@ require (
 	github.com/golang/protobuf v1.4.2
 	github.com/jinzhu/gorm v1.9.14
 	github.com/micro/go-micro/v2 v2.9.1
-	github.com/penghap/shippy/service-user v0.0.0-20200705150531-4a357099c0a8
 	github.com/satori/go.uuid v1.2.0
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381

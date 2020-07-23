@@ -27,14 +27,18 @@ func parseFile(file string) (*pb.Consignment, error) {
 }
 
 const (
-	srvName            = "go.micro.srv.cli"
-	consignmentSrvName = "go.micro.srv.consignment"
+	srvName            = "shippy.service.cli"
+	srvVersion         = "latest"
+	consignmentSrvName = "shippy.service.consignment"
 )
 
 func main() {
 	// NewShippingServiceClient
 	// Set up a connection to the server.
-	srv := micro.NewService(micro.Name(srvName))
+	srv := micro.NewService(
+		micro.Name(srvName),
+		micro.Version(srvVersion),
+	)
 	srv.Init()
 
 	// Create new greeter client
@@ -49,6 +53,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Could not parse file: %v", err)
 	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
@@ -58,4 +63,13 @@ func main() {
 	}
 
 	log.Printf("Created: %t", r.Created)
+
+	resp, err := client.GetConsignments(ctx, &pb.Consignment{})
+	if err != nil {
+		log.Fatalf("Failed to list consignments: %v", err)
+	}
+
+	for _, consignment := range resp.Consignments {
+		log.Printf("%+v", consignment)
+	}
 }

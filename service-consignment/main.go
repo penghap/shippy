@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	micro "github.com/micro/go-micro/v2"
+	"github.com/micro/go-micro/v2"
 
 	"github.com/penghap/shippy/service-consignment/database"
 	"github.com/penghap/shippy/service-consignment/handler"
@@ -36,18 +36,13 @@ func main() {
 	srv := micro.NewService(
 		// This name must match the package name given in your protobuf definition
 		micro.Name(srvName),
-	)
-
-	vesselClient := vesselProto.NewVesselService(vesselServiceName, srv.Client())
-
-	// New Service
-	service := micro.NewService(
-		micro.Name(srvName),
 		micro.Version(srvVersion),
 	)
 
 	// Initialise service
-	service.Init()
+	srv.Init()
+
+	vesselClient := vesselProto.NewVesselService(vesselServiceName, srv.Client())
 
 	// Register Handler
 	h := &handler.Service{session, vesselClient}
