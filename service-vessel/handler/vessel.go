@@ -1,11 +1,11 @@
 package handler
 
 import (
-	"golang.org/x/net/context"
-	"gopkg.in/mgo.v2"
-
+	log "github.com/micro/go-micro/v2/logger"
 	pb "github.com/penghap/shippy/service-vessel/proto/vessel"
 	"github.com/penghap/shippy/service-vessel/repository"
+	"golang.org/x/net/context"
+	"gopkg.in/mgo.v2"
 )
 
 type Service struct {
@@ -19,7 +19,7 @@ func (s *Service) GetRepo() repository.Repository {
 func (s *Service) FindAvailable(ctx context.Context, in *pb.Specification, out *pb.Response) error {
 	repo := s.GetRepo()
 	defer repo.Close()
-
+	log.Info("FindAvailable in", in)
 	var vessel *pb.Vessel
 	vessel, err := repo.FindAvailable()
 
