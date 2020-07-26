@@ -461,6 +461,7 @@ github.com/micro/go-micro/v2 v2.9.1 h1:+S9koIrNWARjpP6k2TZ7kt0uC9zUJtNXzIdZTZRms
 github.com/micro/go-micro/v2 v2.9.1/go.mod h1:x55ZM3Puy0FyvvkR3e0ha0xsE9DFwfPSUMWAIbFY0SY=
 github.com/micro/go-plugins v1.5.1/go.mod h1:jcxejzJCAMH731cQHbS/hncyKe0rxAbzKkibj8glad4=
 github.com/micro/go-plugins/registry/etcdv3/v2 v2.9.1/go.mod h1:wqj9V63R/0CkWgzzKMOhfoiKtRqlUkf+cwuTjY3x9HY=
+github.com/micro/go-plugins/wrapper/breaker/hystrix/v2 v2.9.1/go.mod h1:Ap49tgWCkin0OmUQWg9cjAelLxN9nawvHs0ptgkvU/0=
 github.com/micro/mdns v0.3.0/go.mod h1:KJ0dW7KmicXU2BV++qkLlmHYcVv7/hHnbtguSWt9Aoc=
 github.com/micro/micro v1.16.0/go.mod h1:TO5Ng0KidbfRYIxVM4Q3deZ0A+qwRyP9WeXp+k2fWNA=
 github.com/micro/protoc-gen-micro v1.0.0/go.mod h1:C8ij4DJhapBmypcT00AXdb0cZ675/3PqUO02buWWqbE=

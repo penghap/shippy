@@ -8,6 +8,6 @@ import (
 )
 
 func Handler(ctx context.Context, msg *pb.Response) error {
-	fmt.Printf("Received message: %s \n", msg.Msg)
+	fmt.Printf("Received message: %t \n", msg.Created)
 	return nil
 }

@@ -1,9 +1,12 @@
 package main
 
 import (
+	"time"
+
 	"github.com/micro/go-micro/v2"
 	log "github.com/micro/go-micro/v2/logger"
-
+	"github.com/micro/go-micro/v2/registry"
+	"github.com/micro/go-plugins/registry/etcdv3/v2"
 	"github.com/penghap/shippy/service-user/database"
 	"github.com/penghap/shippy/service-user/handler"
 	pb "github.com/penghap/shippy/service-user/proto/user"
@@ -28,10 +31,23 @@ func main() {
 
 	repo := repository.UserRepository{db}
 
+	// register
+	registerDrive := etcdv3.NewRegistry(func(op *registry.Options) {
+		op.Addrs = []string{"http://localhost:2379"}
+	})
+
 	// New Service
 	service := micro.NewService(
 		micro.Name(srvName),
 		micro.Version(srvVersion),
+		micro.RegisterTTL(time.Second*30),
+		micro.RegisterInterval(time.Second*20),
+		//print log after start
+		micro.AfterStart(func() error {
+			log.Infof("🚀 service listen on ...")
+			return nil
+		}),
+		micro.Registry(registerDrive),
 	)
 
 	// Initialise service

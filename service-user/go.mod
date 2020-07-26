@@ -8,9 +8,12 @@ replace google.golang.org/grpc => google.golang.org/grpc v1.26.0
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/gogo/protobuf v1.2.2-0.20190723190241-65acae22fc9d // indirect
 	github.com/golang/protobuf v1.4.2
 	github.com/jinzhu/gorm v1.9.14
 	github.com/micro/go-micro/v2 v2.9.1
+	github.com/micro/go-plugins/registry/etcdv3/v2 v2.9.1
+	github.com/prometheus/client_golang v1.2.1 // indirect
 	github.com/satori/go.uuid v1.2.0
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381

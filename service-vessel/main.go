@@ -4,8 +4,12 @@ import (
 	"os"
 	"time"
 
+	"github.com/penghap/shippy/service-vessel/subscriber"
+
 	"github.com/micro/go-micro/v2"
 	log "github.com/micro/go-micro/v2/logger"
+	"github.com/micro/go-micro/v2/registry"
+	"github.com/micro/go-plugins/registry/etcdv3/v2"
 
 	"github.com/penghap/shippy/service-vessel/database"
 	"github.com/penghap/shippy/service-vessel/handler"
@@ -33,10 +37,10 @@ func main() {
 		log.Fatalf("Could not connect to mongo host %s - %v", host, err)
 	}
 
-	//// register
-	//registerDrive := etcdv3.NewRegistry(func(op *registry.Options) {
-	//	op.Addrs = []string{"http://127.0.0.1:2379"}
-	//})
+	// register
+	registerDrive := etcdv3.NewRegistry(func(op *registry.Options) {
+		op.Addrs = []string{"http://localhost:2379"}
+	})
 
 	// New Service
 	service := micro.NewService(
@@ -49,7 +53,7 @@ func main() {
 			log.Infof("🚀 service listen on ...")
 			return nil
 		}),
-		//micro.Registry(registerDrive),
+		micro.Registry(registerDrive),
 	)
 
 	// Initialise service
@@ -60,7 +64,7 @@ func main() {
 	pb.RegisterVesselServiceHandler(service.Server(), h)
 
 	// Register Struct as Subscriber
-	//micro.RegisterSubscriber(srvTopic, service.Server(), subscriber.Handler)
+	micro.RegisterSubscriber(srvTopic, service.Server(), subscriber.Handler)
 
 	// Run service
 	if err := service.Run(); err != nil {
